@@ -104,7 +104,7 @@ export const Signup = () => {
             />
           </div>
           <button
-            className="bg-dark text-white text-bold text-base w-full h-12 rounded-md mt-4 hover:bg-gradient-to-r from-rose-500 to-primary hover:shadow-lg hover:shadow-primary/90"
+            className="bg-dark text-white font-bold text-base w-full h-12 rounded-md mt-4 hover:bg-gradient-to-r from-rose-500 to-primary hover:shadow-lg hover:shadow-primary/90"
             type="submit"
           >
             Subscribe to monthly newsletter
