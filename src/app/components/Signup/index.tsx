@@ -1,9 +1,45 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { IconList } from '../icons/IconList'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+
+const formSchema = z.object({
+  email: z
+    .string()
+    .email('Valid email required')
+    .nonempty('The email was empty'),
+})
+
+type formData = z.infer<typeof formSchema>
 
 export const Signup = () => {
   const [desktopOrMobile, setdesktopOrMobile] = useState(false)
+  const router = useRouter()
+
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm<formData>({
+    resolver: zodResolver(formSchema),
+  })
+
+  const srcImg = desktopOrMobile
+    ? './assets/images/illustration-sign-up-mobile.svg'
+    : './assets/images/illustration-sign-up-desktop.svg'
+
+  const errorInput = errors.email
+    ? 'border-primary bg-primary/10 text-primary'
+    : ''
+
+  function submitEmail(data: any) {
+    // Sign up logic
+    const { email } = data
+    router.push(`/Success?email=${email}`)
+  }
 
   useEffect(() => {
     function handleResize() {
@@ -13,10 +49,6 @@ export const Signup = () => {
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
-
-  const srcImg = desktopOrMobile
-    ? '/assets/images/illustration-sign-up-mobile.svg'
-    : '/assets/images/illustration-sign-up-desktop.svg'
 
   return (
     <div className="flex flex-col-reverse sm:flex-row bg-white sm:p-6 sm:rounded-xl h-full">
@@ -48,19 +80,31 @@ export const Signup = () => {
           </div>
         </div>
 
-        <form className="flex flex-col items-start w-full mt-4" action="">
+        <form
+          className="flex flex-col items-start w-full mt-4"
+          onSubmit={handleSubmit(submitEmail)}
+        >
           <div className="flex flex-col gap-2 w-full">
-            <label className="text-dark text-base" htmlFor="">
-              Email adress
-            </label>
+            <div className="w-full flex justify-between">
+              <label className="text-dark text-base" htmlFor="">
+                Email adress
+              </label>
+              <span className="text-primary">
+                {errors.email && <span>{errors.email.message}</span>}
+              </span>
+            </div>
             <input
               type="text"
               placeholder="email@company.com"
-              className="placeholder:text-light border border-light p-2 rounded-md w-full"
+              className={
+                errorInput +
+                'placeholder:text-light outline-none border border-light hover:outline p-2 rounded-md w-full'
+              }
+              {...register('email')}
             />
           </div>
           <button
-            className="bg-dark text-white text-bold text-base w-full h-12 rounded-md mt-4"
+            className="bg-dark text-white text-bold text-base w-full h-12 rounded-md mt-4 hover:bg-gradient-to-r from-rose-500 to-primary hover:shadow-lg hover:shadow-primary/90"
             type="submit"
           >
             Subscribe to monthly newsletter
@@ -68,7 +112,11 @@ export const Signup = () => {
         </form>
       </div>
 
-      <img className="w-full sm:w-1/2 h-full" src={srcImg} alt="Illustration" />
+      <img
+        className="w-full sm:w-1/2 h-full -translate-y-2 sm:translate-y-0"
+        src={srcImg}
+        alt="Illustration"
+      />
     </div>
   )
 }

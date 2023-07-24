@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" style={roboto.style}>
-      <body className="h-screen bg-dark">{children}</body>
+      <body className="h-screen bg-dark w-full max-w-screen">{children}</body>
     </html>
   )
 }
